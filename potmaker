@@ -1,0 +1,38 @@
+#!/bin/bash
+# potmaker - Updates .pot & .po files with any strings found in .php code
+# version: 0.1
+# (c) Júlio Reis 2014, licenced under GPL v3, see <http://www.gnu.org/licenses/>
+# This code lives at https://github.com/Tintazul/potmaker
+
+# find first .pot file; we will change this one
+NEWTEMP="new.pot"
+FILES="`find * -type f -iname '*.pot'`"
+NFILES=`echo "$FILES" | wc -l`
+if [ "$NFILES" -gt 1 ]; then
+  echo "+++ WARNING: more than one .pot file found, processing only the first one:"
+  echo '+++' $FILES
+fi
+if [ -z "$FILES" ]; then
+  echo "+++ FATAL: no .pot file found - exiting"
+  exit 1
+fi
+TEMPLATE=`echo "$FILES" | head -1`
+DIR=`dirname "$TEMPLATE"`
+
+echo "Finding new strings for $TEMPLATE..."
+find . -type f -iname "*.php" | xgettext --from-code=UTF-8 --keyword=__ --keyword=_e --keyword=_x --keyword=_ex --keyword=_n -f - --sort-by-file -o $NEWTEMP
+
+msgmerge -N -U $TEMPLATE $NEWTEMP
+
+if [ ! -f $DIR/*.po ]; then
+	echo "+++ No .po files found in directory '$DIR'"
+else
+  for POFILE in $DIR/*.po
+  do
+    echo "Merging changes to $POFILE..."
+    msgmerge -N -U $POFILE $TEMPLATE
+  done
+fi
+
+echo "Cleaning up..."
+rm -f $NEWTEMP $DIR/*~
