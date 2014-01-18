@@ -13,9 +13,14 @@ Notes
 --------------------------------------
 * This script works from the current directory
 * Sorts strings by file
+* Creates new .pot file if there isn't one already
 
 Changelog
 --------------------------------------
+
+#### 0.2
+* Tests for no strings found
+* Generates first file (it previously did nothing if there was no file to be updated)
 
 #### 0.1
 * Initial commit.
