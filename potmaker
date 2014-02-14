@@ -1,6 +1,6 @@
 #!/bin/bash
 # potmaker - Updates .pot & .po files with any strings found in .php code
-# version: 0.2
+# version: 0.3 (now handles plurals correctly)
 # (c) Júlio Reis 2014, licenced under GPL v3, see <http://www.gnu.org/licenses/>
 # This code lives at https://github.com/Tintazul/potmaker
 
@@ -16,7 +16,7 @@ fi
 NEWTEMP="./new.pot"
 echo "$NEWTEMP"
 echo "Finding new strings..."
-find . -type f -iname "*.php" | xgettext --from-code=UTF-8 --keyword=__ --keyword=_e --keyword=_x --keyword=_ex --keyword=_n -f - --sort-by-file -o $NEWTEMP
+find . -type f -iname "*.php" | xgettext --from-code=UTF-8 --add-comments=Translators --keyword=__ --keyword=_e --keyword=_x --keyword=_ex --keyword=_n:1,2 -f - --sort-by-file -o $NEWTEMP
 
 if [ -z "$NEWTEMP" ]; then
   echo "+++ INFO: No strings found, nothing changed"
