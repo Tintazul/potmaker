@@ -18,6 +18,9 @@ Notes
 Changelog
 --------------------------------------
 
+#### 0.3
+* It now handles plurals correctly
+
 #### 0.2
 * Tests for no strings found
 * Generates first file (it previously did nothing if there was no file to be updated)
