@@ -1,6 +1,6 @@
 #!/bin/bash
 # potmaker - Updates .pot & .po files with any strings found in .php code
-# version: 0.3 (now handles plurals correctly)
+# version: 0.4 (Transifex support)
 # (c) Júlio Reis 2014, licenced under GPL v3, see <http://www.gnu.org/licenses/>
 # This code lives at https://github.com/Tintazul/potmaker
 
@@ -38,14 +38,20 @@ DIR=`dirname "$TEMPLATE"`
 
 msgmerge -N -U $TEMPLATE $NEWTEMP
 
-if [ ! -f $DIR/*.po ]; then
-	echo "+++ INFO: No .po files found in directory '$DIR'"
+# If we’re using Transifex, we push the translation
+if [ -f .tx/config ]; then
+	tx push -s
 else
-  for POFILE in $DIR/*.po
-  do
-    echo "Merging changes to $POFILE..."
-    msgmerge -N -U $POFILE $TEMPLATE
-  done
+	if [ ! -f $DIR/*.po ]; then
+		echo "+++ INFO: No .po files found in directory '$DIR'"
+	else
+		# Merging to .po files
+		for POFILE in $DIR/*.po
+		do
+	  		echo "Merging changes to $POFILE..."
+			msgmerge -N -U $POFILE $TEMPLATE
+		done
+	fi
 fi
 
 echo "Cleaning up..."
